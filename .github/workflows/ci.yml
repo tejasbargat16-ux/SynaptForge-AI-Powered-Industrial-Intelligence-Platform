@@ -1,0 +1,27 @@
+name: SynaptForge CI
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.11'
+
+      - name: Run Test Suite
+        run: |
+          python -m unittest discover -s tests -p "test_*.py"
+
+      - name: Verify Telemetry Generation
+        run: |
+          python simulator/generator.py --count 120 --mode mixed --output data/ci_sample.csv
+          test -f data/ci_sample.csv

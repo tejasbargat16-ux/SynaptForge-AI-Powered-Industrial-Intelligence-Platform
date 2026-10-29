@@ -1,0 +1,300 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>SynaptForge | AI Industrial Intelligence & Digital Twin</title>
+  <meta name="description" content="Next-generation AI-powered industrial intelligence, edge IoT monitoring, digital twin, and energy optimization platform.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <div class="app-layout">
+    <!-- Top Navigation Bar -->
+    <header class="header-bar" id="mainHeader">
+      <div class="brand-group">
+        <div class="brand-icon">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+            <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"></polygon>
+          </svg>
+        </div>
+        <div class="brand-meta">
+          <h1 class="brand-title">SynaptForge</h1>
+          <span class="brand-sub">Nexus Sentinel Engine · Industrial IoT Core</span>
+        </div>
+      </div>
+
+      <!-- Telemetry Simulator Quick Controls -->
+      <div class="controls-panel">
+        <div class="control-badge">
+          <span class="status-dot pulsing" id="connectionDot"></span>
+          <span id="connectionStatusText">SIMULATOR ACTIVE</span>
+        </div>
+
+        <div class="control-item">
+          <label for="simulationMode">Operational Mode:</label>
+          <select id="simulationMode" class="dropdown-select">
+            <option value="mixed">Mixed Profiles (Auto)</option>
+            <option value="nominal">Nominal Baseline</option>
+            <option value="thermal_runaway">Thermal Creep</option>
+            <option value="bearing_fault">Bearing Fault (Vibration)</option>
+            <option value="voltage_sag">Grid Voltage Sag</option>
+          </select>
+        </div>
+
+        <div class="btn-group">
+          <button id="togglePlayBtn" class="btn btn-primary" title="Toggle simulation stream">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor">
+              <polygon points="5 3 19 12 5 21 5 3"></polygon>
+            </svg>
+            <span id="playBtnLabel">Pause Stream</span>
+          </button>
+          <button id="injectFaultBtn" class="btn btn-warning" title="Trigger instant anomaly burst">
+            ⚡ Inject Fault
+          </button>
+        </div>
+      </div>
+    </header>
+
+    <!-- Main Grid Content -->
+    <main class="dashboard-body">
+      <!-- Digital Twin & Realtime Status Hero -->
+      <section class="grid-row twin-row">
+        <!-- Digital Twin Canvas Card -->
+        <div class="card glass-card digital-twin-card">
+          <div class="card-header">
+            <div class="card-title-group">
+              <span class="card-tag">DIGITAL TWIN TELEMETRY</span>
+              <h2>Asset: <span id="assetIdLabel" class="mono-accent">synapt-motor-01</span></h2>
+            </div>
+            <div class="asset-badge" id="assetOverallBadge">NOMINAL</div>
+          </div>
+
+          <div class="twin-visual-container">
+            <svg id="twinSvg" class="twin-svg" viewBox="0 0 460 220">
+              <defs>
+                <linearGradient id="metalGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+                  <stop offset="0%" stop-color="#334155" />
+                  <stop offset="50%" stop-color="#1e293b" />
+                  <stop offset="100%" stop-color="#0f172a" />
+                </linearGradient>
+                <filter id="thermalGlow" x="-20%" y="-20%" width="140%" height="140%">
+                  <feGaussianBlur stdDeviation="8" result="blur" />
+                  <feComposite in="SourceGraphic" in2="blur" operator="over" />
+                </filter>
+              </defs>
+
+              <!-- Base Bedplate -->
+              <rect x="50" y="170" width="360" height="24" rx="4" fill="#1e293b" stroke="#334155" stroke-width="2" />
+              <rect x="80" y="194" width="60" height="8" rx="2" fill="#0f172a" />
+              <rect x="320" y="194" width="60" height="8" rx="2" fill="#0f172a" />
+
+              <!-- Thermal Halo Radiation Effect -->
+              <ellipse id="twinThermalGlow" cx="200" cy="115" rx="110" ry="60" fill="rgba(6, 182, 212, 0.12)" filter="url(#thermalGlow)" />
+
+              <!-- Main Motor Casing -->
+              <rect x="100" y="55" width="200" height="115" rx="10" fill="url(#metalGrad)" stroke="#475569" stroke-width="2.5" />
+
+              <!-- Motor Cooling Fins -->
+              <line x1="130" y1="56" x2="130" y2="169" stroke="#334155" stroke-width="3" />
+              <line x1="160" y1="56" x2="160" y2="169" stroke="#334155" stroke-width="3" />
+              <line x1="190" y1="56" x2="190" y2="169" stroke="#334155" stroke-width="3" />
+              <line x1="220" y1="56" x2="220" y2="169" stroke="#334155" stroke-width="3" />
+              <line x1="250" y1="56" x2="250" y2="169" stroke="#334155" stroke-width="3" />
+              <line x1="280" y1="56" x2="280" y2="169" stroke="#334155" stroke-width="3" />
+
+              <!-- Terminal Junction Box -->
+              <rect x="170" y="32" width="60" height="24" rx="4" fill="#0ea5e9" stroke="#38bdf8" stroke-width="1.5" />
+              <circle cx="185" cy="44" r="3" fill="#ffffff" />
+              <circle cx="215" cy="44" r="3" fill="#ffffff" />
+
+              <!-- Rotor Shaft Extension -->
+              <rect x="300" y="102" width="80" height="20" rx="3" fill="#94a3b8" stroke="#cbd5e1" stroke-width="1.5" />
+
+              <!-- Rotating Coupling Disk -->
+              <g id="twinRotatingCoupling" transform="translate(370, 112)">
+                <circle cx="0" cy="0" r="26" fill="#475569" stroke="#06b6d4" stroke-width="2" />
+                <circle cx="0" cy="0" r="14" fill="#1e293b" />
+                <line x1="-22" y1="0" x2="22" y2="0" stroke="#38bdf8" stroke-width="3" stroke-linecap="round" />
+                <line x1="0" y1="-22" x2="0" y2="22" stroke="#38bdf8" stroke-width="3" stroke-linecap="round" />
+              </g>
+
+              <!-- Vibration Waves Effect -->
+              <path id="twinVibWave" d="M 390 85 Q 405 112 390 140" fill="none" stroke="rgba(245, 158, 11, 0)" stroke-width="3" stroke-linecap="round" />
+            </svg>
+
+            <div class="twin-status-readout">
+              <div class="readout-item">
+                <span class="readout-label">Angular Velocity</span>
+                <span class="readout-val" id="twinRpmVal">1,480 RPM</span>
+              </div>
+              <div class="readout-item">
+                <span class="readout-label">Thermal State</span>
+                <span class="readout-val" id="twinTempVal">41.8 °C</span>
+              </div>
+              <div class="readout-item">
+                <span class="readout-label">ISO 10816 Vibration</span>
+                <span class="readout-val" id="twinVibVal">0.16 mm/s</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- System Intelligence & Energy Summary Card -->
+        <div class="card glass-card energy-summary-card">
+          <div class="card-header">
+            <div class="card-title-group">
+              <span class="card-tag">ENERGY & HEALTH INTELLIGENCE</span>
+              <h2>Operational Summary</h2>
+            </div>
+            <span class="timestamp-label" id="lastUpdatedTs">--:--:-- UTC</span>
+          </div>
+
+          <div class="kpi-grid">
+            <div class="kpi-box">
+              <span class="kpi-label">Active Power</span>
+              <div class="kpi-value-row">
+                <span class="kpi-number" id="kpiPowerW">338.2</span>
+                <span class="kpi-unit">Watts</span>
+              </div>
+              <span class="kpi-sub">V: <span id="subVolt">230.1V</span> | I: <span id="subCurr">1.47A</span></span>
+            </div>
+
+            <div class="kpi-box">
+              <span class="kpi-label">Cumulative Energy</span>
+              <div class="kpi-value-row">
+                <span class="kpi-number" id="kpiEnergyKwh">0.042</span>
+                <span class="kpi-unit">kWh</span>
+              </div>
+              <span class="kpi-sub">Calculated integration</span>
+            </div>
+
+            <div class="kpi-box">
+              <span class="kpi-label">Anomaly Z-Score</span>
+              <div class="kpi-value-row">
+                <span class="kpi-number" id="kpiZScore">0.42</span>
+                <span class="kpi-unit">σ</span>
+              </div>
+              <span class="kpi-sub">Confidence: 99.4%</span>
+            </div>
+
+            <div class="kpi-box">
+              <span class="kpi-label">Telemetry Ingested</span>
+              <div class="kpi-value-row">
+                <span class="kpi-number" id="kpiRecordCount">150</span>
+                <span class="kpi-unit">frames</span>
+              </div>
+              <span class="kpi-sub">Schema 100% compliant</span>
+            </div>
+          </div>
+
+          <!-- Alert notification marquee -->
+          <div class="active-alert-box" id="activeAlertBanner">
+            <div class="alert-pulse-icon" id="alertIcon">✓</div>
+            <div class="alert-info">
+              <strong id="alertHeading">All subsystems operating within calibrated baselines.</strong>
+              <p id="alertDetail">ISO 10816-1 vibration class I & thermal parameters nominal.</p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Realtime Charting & Multi-Metric Panels -->
+      <section class="grid-row charts-row">
+        <!-- Temperature Timeline -->
+        <div class="card glass-card chart-card">
+          <div class="card-header compact">
+            <span class="metric-title">Housing Temperature (°C)</span>
+            <span class="metric-live-val" id="metricTempVal">41.8 °C</span>
+          </div>
+          <div class="canvas-wrapper">
+            <canvas id="tempCanvas" width="450" height="130"></canvas>
+          </div>
+          <div class="metric-footer">
+            <span>Normal: 35–50°C</span>
+            <span>Warning: >55°C</span>
+            <span>Critical: >75°C</span>
+          </div>
+        </div>
+
+        <!-- Vibration RMS Timeline -->
+        <div class="card glass-card chart-card">
+          <div class="card-header compact">
+            <span class="metric-title">Vibration Velocity RMS (mm/s)</span>
+            <span class="metric-live-val" id="metricVibVal">0.16 mm/s</span>
+          </div>
+          <div class="canvas-wrapper">
+            <canvas id="vibCanvas" width="450" height="130"></canvas>
+          </div>
+          <div class="metric-footer">
+            <span>Good: &lt;0.7 mm/s</span>
+            <span>Alert: &gt;1.8 mm/s</span>
+            <span>Critical: &gt;4.5 mm/s</span>
+          </div>
+        </div>
+
+        <!-- Power / Voltage Timeline -->
+        <div class="card glass-card chart-card">
+          <div class="card-header compact">
+            <span class="metric-title">Active Power Demand (Watts)</span>
+            <span class="metric-live-val" id="metricPowerVal">338.2 W</span>
+          </div>
+          <div class="canvas-wrapper">
+            <canvas id="powerCanvas" width="450" height="130"></canvas>
+          </div>
+          <div class="metric-footer">
+            <span>Nominal: ~340 W</span>
+            <span>Grid Sag: Current Surge</span>
+            <span>Efficiency: 91.2%</span>
+          </div>
+        </div>
+      </section>
+
+      <!-- Live Anomaly Logs & Telemetry Stream Table -->
+      <section class="grid-row logs-row">
+        <!-- Incident & Event Audit Log -->
+        <div class="card glass-card event-log-card">
+          <div class="card-header">
+            <h3>Event & Anomaly Audit Trail</h3>
+            <span class="badge-count" id="eventCountBadge">0 Alerts</span>
+          </div>
+          <div class="events-scroll-container" id="eventsContainer">
+            <div class="empty-state">No anomalies recorded. Telemetry steady.</div>
+          </div>
+        </div>
+
+        <!-- Raw Ingestion Feed -->
+        <div class="card glass-card feed-card">
+          <div class="card-header">
+            <h3>Live Telemetry Ingestion Feed</h3>
+            <span class="mono-sub">JSONL Payload Buffer</span>
+          </div>
+          <div class="feed-table-container">
+            <table class="data-table" id="telemetryTable">
+              <thead>
+                <tr>
+                  <th>Timestamp</th>
+                  <th>Temp (°C)</th>
+                  <th>Vib (mm/s)</th>
+                  <th>RPM</th>
+                  <th>Volts</th>
+                  <th>Amps</th>
+                  <th>Power (W)</th>
+                  <th>Status</th>
+                </tr>
+              </thead>
+              <tbody id="telemetryTbody">
+                <!-- Dynamically populated rows -->
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <script src="app.js"></script>
+</body>
+</html>
